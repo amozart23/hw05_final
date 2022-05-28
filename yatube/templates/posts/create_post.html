@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% with request.resolver_match.view_name as view_name %}
+{% load user_filters %}
+
+{% block title %}
+{% if is_edit %}
+  Редактирование записи
+{% else %}
+    Новая запись
+{% endif %}
+{% endblock %}
+
+{% block content %}
+  <main>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8 p-5">
+          <div class="card">
+            <div class="card-header">       
+              {% if is_edit %}
+                Редактирование поста
+              {% else %}
+                Добавление нового поста
+              {% endif %}        
+            </div>
+            <div class="card-body">  
+
+              {% if form.errors %}
+                {% for field in form %}
+                  {% for error in field.errors %}            
+                    <div class="alert alert-danger">
+                      {{ error|escape }}
+                    </div>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <div class="alert alert-danger">
+                    {{ error|escape }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+              
+              {% if is_edit %}
+              <form method="post" enctype="multipart/form-data" action="{% url 'posts:post_edit' post.id %}">
+              {% else %}
+              <form method="post" enctype="multipart/form-data" action="{% url 'posts:post_create' %}">
+              {% endif %}
+                <input type="hidden" name="csrfmiddlewaretoken" value="">   
+                
+                {% csrf_token %}
+
+                  {% for field in form %}
+                  <div class="form-group row my-3 p-3">
+                      {{ field.errors }}
+                      {{ field.label_tag }} {{ field|addclass:'form-control' }}
+                      {% if field.help_text %}
+                      <p class="help">{{ field.help_text|safe }}</p>
+                      {% endif %}
+                  </div>
+                  {% endfor %}
+
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-primary">
+                  {% if is_edit %}
+                    Сохранить
+                  {% else %}
+                    Добавить
+                  {% endif %}
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+{% endwith %}
