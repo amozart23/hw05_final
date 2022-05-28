@@ -16,6 +16,15 @@ TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 User = get_user_model()
 
 
+class FollowsTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    def test_pages_use_correct_templates(self):
+        """Тестируем подписки."""
+
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostViewsTests(TestCase):
     @classmethod
@@ -253,4 +262,3 @@ class PaginatorTests(TestCase):
             with self.subTest(address=address):
                 response = self.client.get(address)
                 self.assertEqual(len(response.context['page_obj']), expected)
-

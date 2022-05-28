@@ -47,7 +47,7 @@ def profile(request, username):
 def post_detail(request, post_id):
     current_post = Post.objects.get(pk=post_id)
     post_count = current_post.author.posts.count()
-    form = PostForm(request.POST or None)
+    form = CommentForm(request.POST or None)
     comments = current_post.comments.all()
     context = {
         'current_post': current_post,
@@ -113,10 +113,15 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    Follow.objects.create(
+    is_follower = Follow.objects.filter(
         user=request.user,
         author=User.objects.get(username=username),
-    )
+    ).exists()
+    if request.user != User.objects.get(username=username) and not is_follower:
+        Follow.objects.create(
+            user=request.user,
+            author=User.objects.get(username=username),
+        )
     return redirect('posts:follow_index')
 
 
