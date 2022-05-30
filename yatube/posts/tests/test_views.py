@@ -20,9 +20,38 @@ class FollowsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.user_follower = User.objects.create_user(username='Follower')
+        cls.user_following = User.objects.create_user(username='Following')
+        cls.third_user = User.objects.create_user(username='third_user')
+        cls.following_client = Client()
+        cls.follower_client = Client()
+        cls.third_user_client = Client()
+        cls.following_client.force_login(cls.user_following)
+        cls.follower_client.force_login(cls.user_follower)
+        cls.third_user_client.force_login(cls.third_user)
+        cls.post = Post.objects.create(
+            text='Текст поста для подписок',
+            author=cls.user_following,
+        )
 
     def test_pages_use_correct_templates(self):
         """Тестируем подписки."""
+        post = FollowsTests.post
+        following = FollowsTests.user_following
+        follower_client = FollowsTests.follower_client
+        to_follow_address = reverse('posts:profile_follow', kwargs={
+            'username': following.username})
+        to_unfollow_address = reverse('posts:profile_unfollow', kwargs={
+            'username': following.username})
+        follower_client.get(to_follow_address)
+        response = follower_client.get(reverse('posts:follow_index'))
+        self.assertContains(response, post.text)
+        third_user_client = FollowsTests.third_user_client
+        response = third_user_client.get(reverse('posts:follow_index'))
+        self.assertNotContains(response, post.text)
+        follower_client.get(to_unfollow_address)
+        response = follower_client.get(reverse('posts:follow_index'))
+        self.assertNotContains(response, post.text)
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
