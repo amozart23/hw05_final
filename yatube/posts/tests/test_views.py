@@ -1,6 +1,6 @@
 import shutil
 import tempfile
-from posts.models import Post, Group, Comment
+from posts.models import Post, Group, Comment, Follow
 
 from django.core.cache import cache
 from django.conf import settings
@@ -34,14 +34,12 @@ class FollowsTests(TestCase):
             author=cls.user_following,
         )
 
-    def test_pages_use_correct_templates(self):
-        """Тестируем подписки."""
+    def test_follow(self):
+        """Тестируем подписку на автора."""
         post = FollowsTests.post
         following = FollowsTests.user_following
         follower_client = FollowsTests.follower_client
         to_follow_address = reverse('posts:profile_follow', kwargs={
-            'username': following.username})
-        to_unfollow_address = reverse('posts:profile_unfollow', kwargs={
             'username': following.username})
         follower_client.get(to_follow_address)
         response = follower_client.get(reverse('posts:follow_index'))
@@ -49,6 +47,19 @@ class FollowsTests(TestCase):
         third_user_client = FollowsTests.third_user_client
         response = third_user_client.get(reverse('posts:follow_index'))
         self.assertNotContains(response, post.text)
+
+    def test_unfollow(self):
+        """Тестируем отписку от автора."""
+        post = FollowsTests.post
+        following = FollowsTests.user_following
+        follower = FollowsTests.user_follower
+        follower_client = FollowsTests.follower_client
+        to_unfollow_address = reverse('posts:profile_unfollow', kwargs={
+            'username': following.username})
+        Follow.objects.create(
+            user=follower,
+            author=following,
+        )
         follower_client.get(to_unfollow_address)
         response = follower_client.get(reverse('posts:follow_index'))
         self.assertNotContains(response, post.text)
