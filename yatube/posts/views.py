@@ -45,7 +45,7 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    current_post = Post.objects.get(pk=post_id)
+    current_post = get_object_or_404(Post, pk=post_id)
     post_count = current_post.author.posts.count()
     form = CommentForm(request.POST or None)
     comments = current_post.comments.all()
@@ -68,7 +68,6 @@ def post_create(request):
         post.author = request.user
         post.save()
         return redirect('posts:profile', request.user.username)
-
     return render(request, template, context)
 
 
@@ -83,15 +82,13 @@ def post_edit(request, post_id):
     if form.is_valid():
         form.save()
         return redirect('posts:post_detail', post.id)
-
     context = {'is_edit': True, 'post': post, 'form': form}
-
     return render(request, template, context)
 
 
 @login_required
 def add_comment(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
