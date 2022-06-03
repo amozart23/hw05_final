@@ -4,7 +4,7 @@
 {% for post in page_obj %}
 <ul>
   <li>
-    Автор: {{ post.author.get_full_name }}
+    Автор: <a href={% url 'posts:profile' post.author.username %}>{{post.author.username}}</a>
   </li>
   <li>
     Дата публикации: {{ post.pub_date|date:"d E Y" }}
@@ -14,9 +14,12 @@
     <img class="card-img my-2" src="{{ im.url }}">
 {% endthumbnail %}
 <p>{{ post.text }}</p>
+<a href={% url 'posts:post_detail' post.pk %}>Открыть пост полностью</a>
+<br>
 {% if post.group %}    
-  <a href={% url 'posts:group_posts' post.group.slug %}>все записи группы</a>
+  <a href={% url 'posts:group_posts' post.group.slug %}>Все записи группы "{{post.group}}"</a>
 {% endif %}
+
 {% if not forloop.last %}<hr>{% endif %}
 {% endfor %}
 {% endcache %}

@@ -11,6 +11,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    'www.mozart23.pythonanywhere.com',
+    'mozart23.pythonanywhere.com',
 ]
 
 INSTALLED_APPS = [
