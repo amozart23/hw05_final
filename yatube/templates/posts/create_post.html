@@ -45,7 +45,6 @@
               {% else %}
               <form method="post" enctype="multipart/form-data" action="{% url 'posts:post_create' %}">
               {% endif %}
-                <input type="hidden" name="csrfmiddlewaretoken" value="">   
                 
                 {% csrf_token %}
 

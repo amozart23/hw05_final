@@ -43,7 +43,7 @@
             <img class="card-img my-2" src="{{ im.url }}">
           {% endthumbnail %}
           <p>
-           {{current_post.text}}
+           {{current_post.text|linebreaks }}
           </p>
           {% if current_post.author == request.user %}
               <a class="btn btn-primary" href={% url 'posts:post_edit' current_post.id %}>
