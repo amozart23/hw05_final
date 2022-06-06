@@ -151,3 +151,4 @@ yatube/posts/static/
 yatube/media/
 
 tmp*
+sent_emails/
