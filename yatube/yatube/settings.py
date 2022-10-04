@@ -4,7 +4,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '8(7n6ym2j)tiq=jwbb#sbo$x+t2bt4*-0l1%@68%24mr@a_1m+'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -13,6 +13,7 @@ ALLOWED_HOSTS = [
     'testserver',
     'www.mozart23.pythonanywhere.com',
     'mozart23.pythonanywhere.com',
+    '51.250.71.60',
 ]
 
 INSTALLED_APPS = [
